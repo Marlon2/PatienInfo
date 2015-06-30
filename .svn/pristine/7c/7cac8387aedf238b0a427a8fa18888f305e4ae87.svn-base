@@ -1,0 +1,152 @@
+package org.com.action;
+
+import java.sql.Connection;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts2.interceptor.ServletRequestAware;
+import org.com.dao.DoctorDao;
+import org.com.dao.KeshiDao;
+import org.com.model.Doctor;
+import org.com.model.Keshi;
+import org.com.model.PageBean;
+import org.com.util.DbUtil;
+
+import com.opensymphony.xwork2.ActionSupport;
+
+public class FrontDoctorAction extends ActionSupport implements
+		ServletRequestAware {
+
+	private static final long serialVersionUID = 1L;
+	private List<Doctor> doctors;// patient对象
+	private List<Keshi> keshis;
+	//接受查询的数据
+	private Doctor doctor;
+	private Doctor doctordetail;
+	private int e_doctorId;
+	private int e_keshiId;
+	private String e_doctorName;
+	private String e_zhuanchang;
+	private String page="1";// 第几页
+	private int rows=10;// 每页多少行
+	//接受用户看的是第几页
+	private int totalPage;
+	HttpServletRequest request;
+	DbUtil dbUtil = new DbUtil();
+	DoctorDao doctorDao = new DoctorDao();
+	KeshiDao keshiDao = new KeshiDao();
+	
+	@Override
+	public String execute() throws Exception {
+		// 链接connection
+		Connection con = null;
+		con = dbUtil.getCon();
+		if(doctor==null){
+			doctor = new Doctor();
+		}
+		doctor.setDoctorName(e_doctorName);
+		doctor.setKeshiId(e_keshiId);
+		doctor.setZhuanchang(e_zhuanchang);
+		keshis = keshiDao.allKeshi(con);
+		System.out.println("------"+e_doctorName+"==="+e_keshiId);
+		totalPage = (doctorDao.doctorCount(con, doctor)-1)/rows+1;
+		PageBean pageBean = new PageBean(Integer.parseInt(page),
+				rows);// 分页pageBean
+		doctors = doctorDao.doctorList(con, pageBean, doctor);
+		return SUCCESS;
+	}
+
+	public String detailDoctor() throws Exception{
+		Connection con = null;
+		con = dbUtil.getCon();
+		keshis = keshiDao.allKeshi(con);
+		doctordetail = doctorDao.getDoctorById(con, e_doctorId);
+		return "detaildoctor";
+	}
+	@Override
+	public void setServletRequest(HttpServletRequest request) {
+		this.request = request;
+	}
+
+	public List<Doctor> getDoctors() {
+		return doctors;
+	}
+
+	public void setDoctors(List<Doctor> doctors) {
+		this.doctors = doctors;
+	}
+
+	public String getPage() {
+		return page;
+	}
+
+	public void setPage(String page) {
+		this.page = page;
+	}
+
+	public int getTotalPage() {
+		return totalPage;
+	}
+
+	public void setTotalPage(int totalPage) {
+		this.totalPage = totalPage;
+	}
+
+	public Doctor getDoctor() {
+		return doctor;
+	}
+
+	public void setDoctor(Doctor doctor) {
+		this.doctor = doctor;
+	}
+
+	public List<Keshi> getKeshis() {
+		return keshis;
+	}
+
+	public void setKeshis(List<Keshi> keshis) {
+		this.keshis = keshis;
+	}
+
+	public int getE_keshiId() {
+		return e_keshiId;
+	}
+
+	public void setE_keshiId(int e_keshiId) {
+		this.e_keshiId = e_keshiId;
+	}
+
+	public String getE_doctorName() {
+		return e_doctorName;
+	}
+
+	public void setE_doctorName(String e_doctorName) {
+		this.e_doctorName = e_doctorName;
+	}
+
+	public int getE_doctorId() {
+		return e_doctorId;
+	}
+
+	public void setE_doctorId(int e_doctorId) {
+		this.e_doctorId = e_doctorId;
+	}
+
+	public Doctor getDoctordetail() {
+		return doctordetail;
+	}
+
+	public void setDoctordetail(Doctor doctordetail) {
+		this.doctordetail = doctordetail;
+	}
+
+	public String getE_zhuanchang() {
+		return e_zhuanchang;
+	}
+
+	public void setE_zhuanchang(String e_zhuanchang) {
+		this.e_zhuanchang = e_zhuanchang;
+	}
+
+}

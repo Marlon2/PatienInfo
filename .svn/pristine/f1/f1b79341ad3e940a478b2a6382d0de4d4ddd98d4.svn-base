@@ -1,0 +1,14 @@
+package org.com.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+public class KeshiDao {
+
+	public ResultSet keshiList(Connection con) throws Exception{
+		String sql = "select * from t_keshi";
+		PreparedStatement pstmt = con.prepareStatement(sql);
+		return pstmt.executeQuery();
+	}
+}

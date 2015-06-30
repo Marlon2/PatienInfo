@@ -1,0 +1,114 @@
+package org.com.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import org.com.model.Doctor;
+import org.com.model.PageBean;
+import org.com.util.DateUtil;
+import org.com.util.StringUtil;
+
+public class DoctorDao {
+
+	/**
+	 * 得到doctor查询结果
+	 */
+	public ResultSet doctorList(Connection con, PageBean pageBean,
+			Doctor doctor, String bbirthday, String ebirthday) throws Exception {
+		StringBuffer sb = new StringBuffer("select * from t_doctor where 1=1");
+		if (doctor.getKeshiId() > 1) {
+			sb.append(" and keshiid='" + doctor.getKeshiId() +"'");
+		}
+		if (StringUtil.isNotEmpty(doctor.getDoctorName())) {
+			sb.append(" and doctorName like '%" + doctor.getDoctorName() + "%'");
+		}
+		if (StringUtil.isNotEmpty(doctor.getSex())) {
+			sb.append(" and sex ='" + doctor.getSex() + "'");
+		}
+		if (StringUtil.isNotEmpty(bbirthday)) {
+			sb.append(" and TO_DAYS(starttime)<=TO_DAYS('" + bbirthday + "')");
+		}
+		if (StringUtil.isNotEmpty(ebirthday)) {
+			sb.append(" and TO_DAYS(endtime)>=TO_DAYS('" + ebirthday + "')");
+		}
+		// 分页
+		if (pageBean != null) {
+			sb.append(" limit " + pageBean.getStart() + ","
+					+ pageBean.getRows());
+		}
+//		System.out.println("doctor select sql:"+sb.toString());
+		PreparedStatement pstmt = con.prepareStatement(sb.toString());
+		return pstmt.executeQuery();
+	}
+	/**
+	 * 获取数据总条数
+	 */
+	public int doctorCount(Connection con,Doctor doctor,String bbirthday,String ebirthday)throws Exception{
+		StringBuffer sb=new StringBuffer("select count(*) as total from t_doctor where 1=1");
+		if (doctor.getKeshiId() != -1) {
+			sb.append(" and keshiid = '" + doctor.getKeshiId() + "'");
+		}
+		if (StringUtil.isNotEmpty(doctor.getDoctorName())) {
+			sb.append(" and doctorName like '%" + doctor.getDoctorName() + "%'");
+		}
+		if (StringUtil.isNotEmpty(doctor.getSex())) {
+			sb.append(" and sex ='" + doctor.getSex() + "'");
+		}
+		if (StringUtil.isNotEmpty(bbirthday)) {
+			sb.append(" and TO_DAYS(starttime)<=TO_DAYS('" + bbirthday + "')");
+		}
+		if (StringUtil.isNotEmpty(ebirthday)) {
+			sb.append(" and TO_DAYS(endtime)>=TO_DAYS('" + ebirthday + "')");
+		}
+//		System.out.println("doctor count sql:"+sb.toString());
+		PreparedStatement pstmt=con.prepareStatement(sb.toString());
+		ResultSet rs=pstmt.executeQuery();
+		if(rs.next()){
+			return rs.getInt("total");
+		}else{
+			return 0;
+		}
+	}
+	public int doctorModify(Connection con, Doctor doctor) throws Exception {
+		String sql="update t_doctor set doctorName=?,sex=?,birthday=?,byyx=?,cynx=?,keshiId=?,zhicheng=?,zhuanchang=?,maxpeople=?,remain=?,starttime=?,endtime=? where doctorId=?";
+		PreparedStatement pstmt=con.prepareStatement(sql);
+		pstmt.setString(1,doctor.getDoctorName());
+		pstmt.setString(2,doctor.getSex());
+		pstmt.setString(3,DateUtil.formatDate(doctor.getBirthday(), "yyyy-MM-dd"));
+		pstmt.setString(4, doctor.getByyx());
+		pstmt.setInt(5, doctor.getCynx());
+		pstmt.setInt(6, doctor.getKeshiId());
+		pstmt.setString(7, doctor.getZhicheng());
+		pstmt.setString(8, doctor.getZhuanchang());
+		pstmt.setInt(9, doctor.getMaxpeople());
+		pstmt.setInt(10, doctor.getRemain());
+		pstmt.setString(11, DateUtil.formatDate(doctor.getStarttime(), "yyyy-MM-dd"));
+		pstmt.setString(12, DateUtil.formatDate(doctor.getEndtime(), "yyyy-MM-dd"));
+		pstmt.setInt(13, doctor.getDoctorId());
+		return pstmt.executeUpdate();
+	}
+	public int doctorAdd(Connection con, Doctor doctor) throws Exception {
+		String sql="insert into t_doctor values(null,?,?,?,?,?,?,?,?,?,?,?,?)";
+		PreparedStatement pstmt=con.prepareStatement(sql);
+		pstmt.setString(1, doctor.getDoctorName());
+		pstmt.setString(2, doctor.getSex());
+		pstmt.setString(3, DateUtil.formatDate(doctor.getBirthday(), "yyyy-MM-dd"));
+		pstmt.setString(4, doctor.getByyx());
+		pstmt.setInt(5, doctor.getCynx());
+		pstmt.setInt(6, doctor.getKeshiId());
+		pstmt.setString(7, doctor.getZhicheng());
+		pstmt.setString(8, doctor.getZhuanchang());
+		pstmt.setInt(9, doctor.getMaxpeople());
+		pstmt.setInt(10, doctor.getRemain());
+		pstmt.setString(11, DateUtil.formatDate(doctor.getStarttime(), "yyyy-MM-dd"));
+		pstmt.setString(12, DateUtil.formatDate(doctor.getEndtime(), "yyyy-MM-dd"));
+		return pstmt.executeUpdate();
+	}
+	public int doctorDelete(Connection con, String delIds) throws Exception {
+		String sql="delete from t_doctor where doctorId in("+delIds+")";
+//		System.out.println("doctor delete sql:"+sql);
+		PreparedStatement pstmt=con.prepareStatement(sql);
+		return pstmt.executeUpdate();
+	}
+}

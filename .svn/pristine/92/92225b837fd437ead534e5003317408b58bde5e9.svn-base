@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	
+	<package name="PatientInfo" namespace="/" extends="struts-default" >
+		<action name="login" class="org.com.action.LoginAction">
+			<result name="error">/index.jsp</result>
+			<result name="user" type="redirect">/main.jsp</result>
+			<result name="admin" type="redirect">/main.jsp</result>
+			<result name="logout" type="redirect">/index.jsp</result>
+		</action>
+		<action name="sick" class="org.com.action.SickAction"></action>
+		<action name="doctor" class="org.com.action.DoctorAction"></action>
+		<action name="keshi" class="org.com.action.KeshiAction"></action>
+		<action name="patient" class="org.com.action.PatientAction">
+		</action>
+		
+		<action name="GuaHao" class="org.com.action.GuaHaoAction">
+		</action>
+	</package>
+	<include file="struts-jfreechart.xml" />
+	
+     
+</struts>

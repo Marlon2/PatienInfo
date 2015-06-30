@@ -1,0 +1,43 @@
+package org.com.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.com.model.Keshi;
+
+public class KeshiDao {
+
+	public ResultSet keshiList(Connection con) throws Exception{
+		String sql = "select * from t_keshi";
+		PreparedStatement pstmt = con.prepareStatement(sql);
+		return pstmt.executeQuery();
+	}
+
+	public List<Keshi> allKeshi(Connection con) throws Exception {
+		String sql = "select * from t_keshi";
+		PreparedStatement pstmt = con.prepareStatement(sql);
+		ResultSet rs = pstmt.executeQuery();
+		List<Keshi> keshis = new ArrayList<Keshi>();
+		while (rs.next()) {
+			Keshi kes = new Keshi();
+			kes.setKeshiId(rs.getInt(1));
+			kes.setKeshiName(rs.getString(2));
+			keshis.add(kes);
+		}
+		return keshis;
+	}
+
+	public String getKeshiNameById(Connection con, int keshiId) throws Exception {
+		String sql = "select * from t_keshi where keshiId ="+keshiId;
+		PreparedStatement pstmt = con.prepareStatement(sql);
+		ResultSet rs = pstmt.executeQuery();
+		if(rs.next()){
+			return rs.getString(2);
+		}
+		return null;
+	}
+}

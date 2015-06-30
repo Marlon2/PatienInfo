@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<constant name="struts.enable.DynamicMethodInvocation" value="true" />
+	<package name="PatientInfo" namespace="/" extends="struts-default" >
+		<action name="login" class="org.com.action.LoginAction">
+			<result name="error">/index.jsp</result>
+			<result name="user" type="redirect">/main.jsp</result>
+			<result name="admin" type="redirect">/main.jsp</result>
+			<result name="logout" type="redirect">/index.jsp</result>
+		</action>
+		<action name="sick" class="org.com.action.SickAction"></action>
+		<action name="doctor" class="org.com.action.DoctorAction"></action>
+		<action name="keshi" class="org.com.action.KeshiAction"></action>
+		<action name="yuyue" class="org.com.action.YuYueAction"></action>
+		<action name="admin" class="org.com.action.AdminAction"></action>
+		<action name="register" class="org.com.action.RegisterAction">
+			<result name="success">/front/succ.jsp</result>
+			<result name="input">/front/register.jsp</result>
+		</action>
+		<action name="userlogin" class="org.com.action.UserLoginAction">
+			<result name="success">/front/succ.jsp</result>
+			<result name="input">/front/main.jsp</result>
+		</action>
+		
+		<action name="frontDoctors" class="org.com.action.FrontDoctorAction">
+			<result name="success">/front/doctorlist.jsp</result>
+			<result name="detaildoctor">/front/doctordetail.jsp</result>
+		</action>
+		
+		<action name="doctorwork" class="org.com.action.DoctorWorkAction">
+		</action>
+		<action name="frontDcotorWork" class="org.com.action.FrontDoctorWorkAction">
+			<result name="detailWork">/front/useryuyue.jsp</result>
+		</action>
+		<!-- 前台预约 -->
+		<action name="frontyuyue" class="org.com.action.FrontYuyueAction">
+		<result name="save">/front/yuyuesucc.jsp</result>
+		<result name="detail">/front/yuyuedetail.jsp</result>
+		</action>
+		<action name="frontsick" class="org.com.action.FrontSickAction">
+			<result name="save">/front/userinfo.jsp</result>
+			<result name="update">/front/userinfomodify.jsp</result>
+			<result name="savepwd">/front/usermodifypwd.jsp</result>
+		</action>
+	</package>
+</struts>
